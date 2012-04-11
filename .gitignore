@@ -1,0 +1,12 @@
+# Visual studio user files
+*.suo
+*.user
+*.cache
+*.FileListAbsolute.txt
+*.nupkg
+error-*.xml
+*.build.csdef
+
+# output folders
+bin
+obj
