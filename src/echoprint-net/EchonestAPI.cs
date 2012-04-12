@@ -20,7 +20,7 @@ namespace echoprint_net
         Success
     }
 
-    class EchonestAPI
+    public class EchonestAPI
     {
         public EchonestResult IdentifySong(Code item, out String errorMessage)
         {

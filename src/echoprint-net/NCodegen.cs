@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace echoprint_net
 {
-    class NCodegen : IDisposable
+    public class NCodegen : IDisposable
     {
         private Process codegen = new Process();
         private StreamWriter input = null;
