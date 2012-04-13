@@ -21,7 +21,7 @@ namespace SongIdentifier
         public Form1()
         {
             InitializeComponent();
-
+            xnadispatcher.Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -44,7 +44,6 @@ namespace SongIdentifier
             //DispatcherTimer 
             // see http://msdn.microsoft.com/library/ff842408.aspx
 
-            xnadispatcher.Start();
             ThreadStart start = new ThreadStart(Recording);
             recording = new Thread(start);
             recording.Start();
@@ -85,7 +84,7 @@ namespace SongIdentifier
                 }
 
                 var api = new EchonestAPI();
-                using (NCodegen codegen = new NCodegen(@"C:\dev\scratchpad\codegen\ENMFP", "codegen.windows.exe", 10, 30))
+                using (NCodegen codegen = new NCodegen(@".\", "codegen.windows.exe", 0, 20))
                 {
                     codegen.Start((data) =>
                     {
@@ -125,14 +124,19 @@ namespace SongIdentifier
             }
             finally
             {
-                xnadispatcher.Stop();
+                //xnadispatcher.Stop();
                 ToggleControls(false);
             }
         }
 
         private void Log(string message)
         {
-            txtLog.Invoke(new MethodInvoker(() => txtLog.Text += message + "\r\n"));
+            txtLog.Invoke(new MethodInvoker(() => { 
+                txtLog.Text += message + "\r\n";
+                txtLog.SelectionStart = txtLog.Text.Length;
+                txtLog.ScrollToCaret();
+                txtLog.Refresh();
+            }));
         }
 
         private void ToggleControls(bool recording)

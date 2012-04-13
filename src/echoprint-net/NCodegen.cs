@@ -50,13 +50,14 @@ namespace echoprint_net
             AddFile(new FileInfo(path));
         }
 
+        string[] supportedExtensions = { ".mp3", ".m4a", ".mp4", ".aif", ".aiff", ".flac", ".au", ".wav", ".aac", ".flv", "" };
+
         public void AddFile(FileInfo file)
         {
             if (!file.Exists)
                 throw new FileNotFoundException("File not found", file.Name);
-            else if (".m4a|.mp3|.wav".IndexOf(file.Extension) == -1)
+            else if (!supportedExtensions.Any(ext => ext == file.Extension))
                 return;
-
             input.WriteLine(file.FullName);
         }
 

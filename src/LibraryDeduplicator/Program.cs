@@ -15,7 +15,7 @@ namespace LibraryDeduplicator
             string[] files = Directory.GetFiles("C:\\Users\\Mark\\Music\\Google Music\\Bon Jovi\\Cross Road");
 
             var api = new EchonestAPI();
-            using (NCodegen codegen = new NCodegen(@"C:\dev\scratchpad\codegen\ENMFP", "codegen.windows.exe", 10, 30))
+            using (NCodegen codegen = new NCodegen(@".\", "codegen.windows.exe", 10, 30))
             {
                 codegen.Start((data) =>
                 {
