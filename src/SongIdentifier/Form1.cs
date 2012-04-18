@@ -26,6 +26,7 @@ namespace SongIdentifier
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
         }
 
         private void btnIdentify_Click(object sender, EventArgs e)
@@ -84,7 +85,7 @@ namespace SongIdentifier
                 }
 
                 var api = new EchonestAPI();
-                using (NCodegen codegen = new NCodegen(@".\", "codegen.windows.exe", 0, 20))
+                using (NCodegen codegen = new NCodegen(@".\", "codegen.exe", 0, 20))
                 {
                     codegen.Start((data) =>
                     {

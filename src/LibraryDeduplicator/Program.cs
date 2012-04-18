@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using echoprint_net;
 using echoprint_net.Data;
 
@@ -12,16 +13,16 @@ namespace LibraryDeduplicator
     {
         static void Main(string[] args)
         {
-            string[] files = Directory.GetFiles("C:\\Users\\Mark\\Music\\Google Music\\Bon Jovi\\Cross Road");
+            string[] files = Directory.GetFiles(@".\samplefiles");
 
             var api = new EchonestAPI();
-            using (NCodegen codegen = new NCodegen(@".\", "codegen.windows.exe", 10, 30))
+            using (NCodegen codegen = new NCodegen(@"C:\dev\scratchpad\codegen", "codegen.exe", 10, 30))
             {
                 codegen.Start((data) =>
                 {
                     if (!String.IsNullOrEmpty(data.error))
                     {
-                        Console.WriteLine("{0:HH:mm:ss} - {1} {2}", DateTime.Now, data.error);
+                        Console.WriteLine("{0:HH:mm:ss} - {1}", DateTime.Now, data.error);
                         return;
                     }
 
@@ -31,7 +32,10 @@ namespace LibraryDeduplicator
                 });
 
                 foreach (var item in files)
+                {
+                    Console.WriteLine("{0:HH:mm:ss} - {1}", DateTime.Now, item);
                     codegen.AddFile(item);
+                }
             }
         }
 
@@ -40,7 +44,7 @@ namespace LibraryDeduplicator
             if (result == EchonestResult.Success)
             {
                 if (!String.IsNullOrEmpty(data.metadata.id))
-                    Console.WriteLine("{0:HH:mm:ss} - {3} {1} {2}", DateTime.Now, data.metadata.title, data.metadata.filename, data.metadata.id);
+                    Console.WriteLine("{0:HH:mm:ss} - {3} {1} {2} {4}", DateTime.Now, data.metadata.title, data.metadata.filename, data.metadata.id, data.code);
                 else
                     Console.WriteLine("{0:HH:mm:ss} - NOT FOUND {1} {2}", DateTime.Now, data.metadata.title, data.metadata.filename);
             }
@@ -53,7 +57,7 @@ namespace LibraryDeduplicator
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(error);
+                Console.WriteLine(String.IsNullOrEmpty(error) ? "Which way'd he go?" : error);
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }

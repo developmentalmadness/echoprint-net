@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using echoprint_net.Data;
 using Newtonsoft.Json;
 
@@ -14,6 +15,7 @@ namespace echoprint_net
         private Process codegen = new Process();
         private StreamWriter input = null;
         private Action<Code> callback = null;
+        private long jobCount = 0;
 
         public NCodegen(string workingDir, string codegenexe, int start, int end)
         {
@@ -54,34 +56,77 @@ namespace echoprint_net
 
         public void AddFile(FileInfo file)
         {
-            if (!file.Exists)
-                throw new FileNotFoundException("File not found", file.Name);
-            else if (!supportedExtensions.Any(ext => ext == file.Extension))
-                return;
-            input.WriteLine(file.FullName);
+            try
+            {
+                if (!file.Exists)
+                    throw new FileNotFoundException("File not found", file.Name);
+                else if (!supportedExtensions.Any(ext => ext == file.Extension))
+                    return;
+
+                Interlocked.Increment(ref jobCount);
+                input.WriteLine(file.FullName);
+            }
+            catch
+            {
+                SignalJobCompleted();
+            }
         }
 
-        private static void ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        private void ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (String.IsNullOrEmpty(e.Data))
-                return;
+            try
+            {
+                if (String.IsNullOrEmpty(e.Data))
+                    return;
 
-            throw new IOException(String.Format("A non-fatal exception occurred during process execution: \"{0}\"", e.Data));
+                throw new IOException(String.Format("A non-fatal exception occurred during process execution: \"{0}\"", e.Data));
+            }
+            finally
+            {
+                SignalJobCompleted();
+            }
         }
 
         private void OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (e.Data == null || "[]".IndexOf(e.Data) != -1)
-                return;
+            try
+            {
+                if (e.Data == null || "[]".IndexOf(e.Data) != -1)
+                    return;
 
-            Code data = null;
-            if (e.Data.EndsWith(","))
-                data = JsonConvert.DeserializeObject<Code>(e.Data.Substring(0, e.Data.Length - 1));
-            else
-                data = JsonConvert.DeserializeObject<Code>(e.Data);
+                Code data = null;
+                if (e.Data.EndsWith(","))
+                    data = JsonConvert.DeserializeObject<Code>(e.Data.Substring(0, e.Data.Length - 1));
+                else
+                    data = JsonConvert.DeserializeObject<Code>(e.Data);
 
-            if (data != null)
-                callback.BeginInvoke(data, (result) => callback.EndInvoke(result), null);
+                if (data != null)
+                {
+                    callback.BeginInvoke(data, (result) =>
+                    {
+                        callback.EndInvoke(result);
+                        SignalJobCompleted();
+                    }, null);
+                }
+            }
+            catch
+            {
+                SignalJobCompleted();
+            }
+        }
+
+        ManualResetEventSlim allCompleted = new ManualResetEventSlim(false);
+        private void SignalJobCompleted()
+        {
+            var remaining = Interlocked.Decrement(ref jobCount);
+            
+            if (disposed && remaining <= 0)
+                allCompleted.Set();
+        }
+
+        public void WaitForAll()
+        {
+
         }
 
         bool disposed = false;
@@ -89,10 +134,13 @@ namespace echoprint_net
         {
             if (disposed)
                 throw new ObjectDisposedException("NCodegen");
-            
+
+            disposed = true;
             input.Close();
-            codegen.WaitForExit();
+            codegen.WaitForExit(); 
             codegen.Dispose();
+
+            allCompleted.Wait();
         }
     }
 }

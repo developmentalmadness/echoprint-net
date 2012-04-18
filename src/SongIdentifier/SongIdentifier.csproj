@@ -83,14 +83,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\lib\ENMFP\codegen.dll">
+    <Content Include="..\..\lib\codegen.dll">
       <Link>codegen.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\lib\ENMFP\codegen.windows.exe">
-      <Link>codegen.windows.exe</Link>
+    </Content>
+    <Content Include="..\..\lib\codegen.exe">
+      <Link>codegen.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Include="..\..\lib\tag.dll">
+      <Link>tag.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\lib\zlib1.dll">
+      <Link>zlib1.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
