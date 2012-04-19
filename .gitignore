@@ -6,7 +6,12 @@
 *.nupkg
 error-*.xml
 *.build.csdef
+*.opensdf
+*.sdf
+*.vcxproj.user
 
 # output folders
 bin
 obj
+ipch
+Debug

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryDeduplicator", "Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongIdentifier", "SongIdentifier\SongIdentifier.csproj", "{41653916-3653-40B4-A904-7CFB3237E9F0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "echoprint-cli", "echoprint-cli\echoprint-cli.vcxproj", "{287808AC-B48F-17FE-BB11-BE578B6B7907}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,16 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Debug|Win32.ActiveCfg = Debug|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Debug|Win32.Build.0 = Debug|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Release|Any CPU.ActiveCfg = Release|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Release|Win32.ActiveCfg = Release|Win32
+		{287808AC-B48F-17FE-BB11-BE578B6B7907}.Release|Win32.Build.0 = Release|Win32
 		{41653916-3653-40B4-A904-7CFB3237E9F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{41653916-3653-40B4-A904-7CFB3237E9F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41653916-3653-40B4-A904-7CFB3237E9F0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

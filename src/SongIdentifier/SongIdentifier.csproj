@@ -77,6 +77,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\echoprint-cli\echoprint-cli.vcxproj">
+      <Project>{287808ac-b48f-17fe-bb11-be578b6b7907}</Project>
+      <Name>echoprint-cli</Name>
+    </ProjectReference>
     <ProjectReference Include="..\echoprint-net\echoprint-net.csproj">
       <Project>{b10c0a06-237b-4816-9a13-0d57b5bba7d6}</Project>
       <Name>echoprint-net</Name>

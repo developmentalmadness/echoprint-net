@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using echoprint_net;
+using echoprintcli;
 using Microsoft.Xna.Framework.Audio;
 
 namespace SongIdentifier
@@ -26,6 +27,7 @@ namespace SongIdentifier
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            CodegenCLI codegen = new CodegenCLI();
             
         }
 
