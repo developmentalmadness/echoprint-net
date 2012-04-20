@@ -12,17 +12,19 @@ namespace echoprintcli {
 
 		if(buffer->Length > 0){
 			GCHandle h = GCHandle::Alloc(buffer, System::Runtime::InteropServices::GCHandleType::Pinned);
-			Codegen* codegen = nullptr;
 
 			try{
 				float* pcm = (float*)(void*)h.AddrOfPinnedObject();
-				codegen = new Codegen(pcm, samples, start_offset);
-				std::string code = codegen->getCodeString();
-				
+				Codegen* codegen = new Codegen(pcm, samples, start_offset);
+				std::string code;
+				try{
+					code = codegen->getCodeString();
+				}finally{
+					delete codegen;
+				}
 				result = marshal_as<String^>(code);
 			}
 			finally{
-				delete codegen;
 				h.Free();
 			}
 		}

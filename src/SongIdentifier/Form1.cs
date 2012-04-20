@@ -9,8 +9,10 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using echoprint_net;
+using echoprint_net.Data;
 using echoprintcli;
 using Microsoft.Xna.Framework.Audio;
+using Newtonsoft.Json;
 
 namespace SongIdentifier
 {
@@ -56,6 +58,7 @@ namespace SongIdentifier
             var mic = Microphone.Default;
             Log(String.Format("Using '{0}' as audio input...", mic.Name));
             var buffer = new byte[mic.GetSampleSizeInBytes(TimeSpan.FromSeconds(22))];
+            
             int bytesRead = 0;
             string fileName = String.Empty;
 
@@ -64,60 +67,55 @@ namespace SongIdentifier
                 mic.Start();
                 try
                 {
-                    using (var stream = File.Create(".\\" + Guid.NewGuid(), buffer.Length))
+                    Log(String.Format("{0:HH:mm:ss} Start recording audio stream...", DateTime.Now));
+                    while (bytesRead < buffer.Length)
                     {
-                        fileName = stream.Name;
-
-                        Log(String.Format("{0:HH:mm:ss} Start recording audio stream...", DateTime.Now));
-                        while (bytesRead < buffer.Length)
-                        {
-                            Thread.Sleep(1000);
-                            var bytes = mic.GetData(buffer, bytesRead, (buffer.Length - bytesRead));
-                            stream.Write(buffer, bytesRead, bytes);
-                            Log(String.Format("{0:HH:mm:ss} Saving {1} bytes to stream...", DateTime.Now, bytes));
-                            bytesRead += bytes;
-                        }
-                        Log(String.Format("{0:HH:mm:ss} Finished recording audio stream...", DateTime.Now));
+                        Thread.Sleep(1000);
+                        var bytes = mic.GetData(buffer, bytesRead, (buffer.Length - bytesRead));
+                        Log(String.Format("{0:HH:mm:ss} Saving {1} bytes to stream...", DateTime.Now, bytes));
+                        bytesRead += bytes;
                     }
+                    Log(String.Format("{0:HH:mm:ss} Finished recording audio stream...", DateTime.Now));
                 }
                 finally
                 {
                     mic.Stop();
                 }
 
-                var api = new EchonestAPI();
-                using (NCodegen codegen = new NCodegen(@".\", "codegen.exe", 0, 20))
+                Func<byte, float> convert = (b) => System.Convert.ToSingle(b);
+                var converter = new Converter<byte, float>(convert);
+                float[] pcm = Array.ConvertAll<byte, float>(buffer, converter);
+
+                Log(String.Format("{0:HH:mm:ss} Generating audio fingerprint...", DateTime.Now));
+                var codeg = new CodegenCLI();
+                String code = codeg.getCodeString(pcm, (uint)pcm.Length, 0);
+                
+                //CONVERT TO JSON
+                var data = JsonConvert.DeserializeObject<Code>(code);
+                if (!String.IsNullOrEmpty(data.error))
                 {
-                    codegen.Start((data) =>
-                    {
-                        if (!String.IsNullOrEmpty(data.error))
-                        {
-                            Log(String.Format("{0:HH:mm:ss} - {1}", DateTime.Now, data.error));
-                            return;
-                        }
+                    Log(String.Format("{0:HH:mm:ss} - {1}", DateTime.Now, data.error));
+                    return;
+                }
 
-                        string error;
-                        Log(String.Format("{0:HH:mm:ss} Attempting to identify audio stream...", DateTime.Now));
-                        var result = api.IdentifySong(data, out error);
-                        switch (result)
-                        {
-                            case EchonestResult.Success:
-                                if (!String.IsNullOrEmpty(data.metadata.id))
-                                    Log(String.Format("{0:HH:mm:ss} - {1} {2}", DateTime.Now, data.metadata.id, data.metadata.title));
-                                else
-                                    Log(String.Format("{0:HH:mm:ss} - NOT FOUND", DateTime.Now));
-                                break;
-                            case EchonestResult.NotFound:
-                                Log(String.Format("{0:HH:mm:ss} - NOT FOUND", DateTime.Now));
-                                break;
-                            case EchonestResult.Error:
-                                Log(String.Format("{0:HH:mm:ss} - ERROR: {1}", DateTime.Now, error));
-                                break;
-                        }
-                    });
-
-                    Log(String.Format("{0:HH:mm:ss} Generating audio fingerprint...", DateTime.Now));
-                    codegen.AddFile(fileName);
+                var api = new EchonestAPI();
+                string error;
+                Log(String.Format("{0:HH:mm:ss} Attempting to identify audio stream...", DateTime.Now));
+                var result = api.IdentifySong(data, out error);
+                switch (result)
+                {
+                    case EchonestResult.Success:
+                        if (!String.IsNullOrEmpty(data.metadata.id))
+                            Log(String.Format("{0:HH:mm:ss} - {1} {2}", DateTime.Now, data.metadata.id, data.metadata.title));
+                        else
+                            Log(String.Format("{0:HH:mm:ss} - NOT FOUND", DateTime.Now));
+                        break;
+                    case EchonestResult.NotFound:
+                        Log(String.Format("{0:HH:mm:ss} - NOT FOUND", DateTime.Now));
+                        break;
+                    case EchonestResult.Error:
+                        Log(String.Format("{0:HH:mm:ss} - ERROR: {1}", DateTime.Now, error));
+                        break;
                 }
             }
             catch (Exception ex)
