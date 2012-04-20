@@ -2,6 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 11
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "echoprint-net", "echoprint-net\echoprint-net.csproj", "{B10C0A06-237B-4816-9A13-0D57B5BBA7D6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{287808AC-B48F-17FE-BB11-BE578B6B7907} = {287808AC-B48F-17FE-BB11-BE578B6B7907}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryDeduplicator", "LibraryDeduplicator\LibraryDeduplicator.csproj", "{5396F441-AAE9-44C3-B496-76784DF24696}"
 EndProject

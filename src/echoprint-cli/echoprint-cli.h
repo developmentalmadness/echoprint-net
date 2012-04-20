@@ -11,6 +11,6 @@ namespace echoprintcli {
 	public ref class CodegenCLI
 	{
 		public:
-			String^ getCodeString(const float* pcm, int samples, int start_offset);
+			String^ getCodeString(array<float>^ buffer, unsigned int samples, int start_offset);
 	};
 }
