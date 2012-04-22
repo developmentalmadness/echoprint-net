@@ -57,7 +57,7 @@ namespace SongIdentifier
         {
             var mic = Microphone.Default;
             Log(String.Format("Using '{0}' as audio input...", mic.Name));
-            var buffer = new byte[mic.GetSampleSizeInBytes(TimeSpan.FromSeconds(22))];
+            var buffer = new byte[mic.GetSampleSizeInBytes(TimeSpan.FromSeconds(5))];
             
             int bytesRead = 0;
             string fileName = String.Empty;

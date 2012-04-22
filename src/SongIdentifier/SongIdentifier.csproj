@@ -92,10 +92,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\lib\codegen.dll">
-      <Link>codegen.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\lib\codegen.exe">
       <Link>codegen.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
